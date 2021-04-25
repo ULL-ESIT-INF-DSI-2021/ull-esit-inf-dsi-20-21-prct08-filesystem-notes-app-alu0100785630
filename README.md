@@ -65,7 +65,7 @@ npm install --save-dev yargs @types/yargs
 
 ## Práctica
 
-He creado una clase Note que constituye el conjunto de datos que tiene una nota:
+He creado una __clase Note__ que constituye el conjunto de datos que tiene una nota:
 
 - Título
 - Contenido o cuerpo
@@ -115,3 +115,15 @@ export class Note {
   }
 }
 ```
+
+
+### Ejecución de la aplicación
+
+Aquí muestro un ejemplo de cómo se ejecuta la aplicación:
+
+![app_running](img/app.png)
+
+
+## Conclusión
+
+## Bibliografía

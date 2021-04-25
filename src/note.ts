@@ -68,6 +68,6 @@ export class Note {
    * @returns Todo el conjunto de datos de la nota en formato JSON
    */
   toJSON(): string {
-    return '{\n\"titulo\": \"' + this.title + '\",\n\"cuerpo\": \"' + this.content + '\",\n\"color\": \"' + this.color + '\"\n}';
+    return '{\n\"title\": \"' + this.title + '\",\n\"content\": \"' + this.content + '\",\n\"color\": \"' + this.color + '\"\n}';
   }
 }
