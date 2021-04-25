@@ -38,4 +38,14 @@ describe('Pruebas para la clase Note', () => {
     nota.setColor('Azul');
     expect(nota.getColor()).to.be.eql('Azul');
   });
+
+  it('Podemos obtener la nota en formato JSON✅', () => {
+    let noteJSON = nota.toJSON();
+    expect(noteJSON).to.be.eql(`{
+"titulo": "NEW TITLE",
+"cuerpo": "New content",
+"color": "Azul"
+}`
+  );
+  });
 });

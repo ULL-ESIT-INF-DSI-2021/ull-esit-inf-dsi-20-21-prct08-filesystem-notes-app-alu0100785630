@@ -62,3 +62,56 @@ npm install --save-dev chalk
 ```bash
 npm install --save-dev yargs @types/yargs
 ```
+
+## Práctica
+
+He creado una clase Note que constituye el conjunto de datos que tiene una nota:
+
+- Título
+- Contenido o cuerpo
+- Color
+
+He escrito diferentes getters y setters para configurar los atributos recién mencionados, además de un método `toJSON` que devuelve la nota en formato JSON.
+
+
+```typescript
+export class Note {
+
+  constructor (
+    public title: string, 
+    public content: string, 
+    public color: string) {
+      this.title = title;
+      this.content = content;
+      this.color = color;
+  }
+
+  getTitle() {
+    return this.title;
+  }
+
+  setTitle(title: string): void {
+    this.title = title;
+  }
+
+  getColor() {
+    return this.color;
+  }
+
+  setColor(color: string): void {
+    this.color = color;
+  }
+
+  getContent() {
+    return this.content;
+  }
+
+  setContent(content: string): void {
+    this.content = content;
+  }
+
+  toJSON(): string {
+    return '{\n\"titulo\": \"' + this.title + '\",\n\"cuerpo\": \"' + this.content + '\",\n\"color\": \"' + this.color + '\"\n}';
+  }
+}
+```
