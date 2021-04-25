@@ -1,5 +1,18 @@
 # Práctica 8: Aplicación de procesamiento de notas de texto
 
+
+<p align="center">
+    <a href="">
+        <img alt="Tests" src="">
+    </a>
+    <a href='https://coveralls.io/github/ULL-ESIT-INF-DSI-2021/ull-esit-inf-dsi-20-21-prct08-filesystem-notes-app-alu0100785630?branch=master'>
+        <img src='https://coveralls.io/repos/github/ULL-ESIT-INF-DSI-2021/ull-esit-inf-dsi-20-21-prct08-filesystem-notes-app-alu0100785630/badge.svg?branch=master' alt='Coverage Status' />
+    </a>
+    <a href=''>
+        <img src='' alt='Quality Gate Status' />
+    </a>
+</p>
+
 ## Introducción
 
 Este es el informe de la octava práctica, donde he implementado una aplicación de procesamiento de notas. He podido familiarizarme con las API de Node.js y la utilización del sistema de ficheros mediante TypeScript.
@@ -30,3 +43,21 @@ npm install
 ```
 ![project_structure](img/project_structure.png)
 
+He cambiado los ficheros `coveralls.yml`, `tests.yml`y `sonar-cloud.yml` para que escuche en la rama `master` en vez de `main`. Asimismo, he actualizado el fichero `sonar-project-properties` para que contenga la información de mi repositorio.
+
+Una vez configurado la estructura de ficheros-directorios y las herramientas necesarias, he procedido a instalar las dependencias necesarias para la realización de la práctica:
+
+- API síncrona de Node.JS para trabajar con ficheros:
+```bash
+npm install --save-dev @types/node
+```
+
+- Chalk para dar color a la consola:
+```bash
+npm install --save-dev chalk
+```
+
+- Yargs para la utilización de argumentos:
+```bash
+npm install --save-dev yargs @types/yargs
+```
