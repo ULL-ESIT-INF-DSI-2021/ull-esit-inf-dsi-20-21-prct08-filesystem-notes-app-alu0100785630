@@ -47,9 +47,7 @@ yargs.command({
   },
 });
 
-/**
- * Definicion del comando REMOVE
- */
+
 yargs.command({
   command: 'remove',
   describe: 'Elimina una nota',
@@ -75,9 +73,7 @@ yargs.command({
   },
 });
 
-/**
- * Definicion del comando MODIFY
- */
+
 yargs.command({
   command: 'modify',
   describe: 'Editar una nota',
@@ -116,9 +112,7 @@ yargs.command({
   },
 });
 
-/**
- * Definicion del comando READ
- */
+
 yargs.command({
   command: 'read',
   describe: 'Leer una nota',
@@ -143,9 +137,7 @@ yargs.command({
   },
 });
 
-/**
- * Definicion del comando LIST
- */
+
 yargs.command({
   command: 'list',
   describe: 'Mostrar todas las notas del usuario',

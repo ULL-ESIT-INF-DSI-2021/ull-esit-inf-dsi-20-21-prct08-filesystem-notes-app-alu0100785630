@@ -117,6 +117,277 @@ export class Note {
 ```
 
 
+Seguidamnete, para la interacción del usuario con la aplicación, he creado una clas `commandFunctions` que engloba las funciones de lectura-escritura en ficheros usando el módulo FileSystem del core de Node. He seguido cuidadosamente la __documentación__ e implemtado las funciones que requería la práctica.
+
+
+```typescript
+import * as fs from 'fs';
+import * as chalk from 'chalk';
+import { Note } from './note';
+
+
+export class commandFunctions {
+  constructor() {}
+
+  addNote(
+    user: string, 
+    title: string, 
+    content: string,
+    color: string): void {
+
+    if (!fs.existsSync(`notes/${user}`)) {
+      fs.mkdirSync(`notes/${user}`, { recursive: true });
+      console.log(chalk.blue('Fichero usuario creado✅'));
+    }
+
+    const nota = new Note(title, content, color);
+
+    if (!fs.existsSync(`notes/${user}/${title}.json`)) {
+      fs.writeFileSync(`notes/${user}/${title}.json`, nota.toJSON());
+      console.log(chalk.green('Nota creada✅'));
+    } 
+    else
+      console.log(chalk.red('ERROR: No puede haber 2 notas con el mismo título ❌'));
+  }
+
+  deleteNote(
+    user: string, 
+    title: string): void {
+
+    if (fs.existsSync(`notes/${user}/${title}.json`)) {
+      fs.rmSync(`notes/${user}/${title}.json`);
+      console.log(chalk.blue('Nota eliminada✅'));
+    } 
+    else
+      console.log(chalk.red('ERROR: La nota no existe❌'));
+  }
+
+  editNote(
+    user: string, 
+    title: string, 
+    content: string,
+    color: string): void {
+
+    if (fs.existsSync(`notes/${user}/${title}.json`)) {
+      const nota = new Note(title, content, color);
+      fs.writeFileSync(`notes/${user}/${title}.json`, nota.toJSON());
+      console.log(chalk.green('Nota editada✅'));
+    } 
+    else
+      console.log(chalk.red('ERROR: La nota no existe❌'));
+  }
+
+  showNotes( user: string ): Note[] {
+    let notes: Note[] = [];
+    
+    fs.readdirSync(`notes/${user}`).forEach((n) => {
+
+      let data = fs.readFileSync(`notes/${user}/${n}`),
+      noteJsonData = JSON.parse(data.toString()),
+      note = new Note(noteJsonData.title, noteJsonData.content, noteJsonData.color);
+
+      notes.push(note);
+    });
+
+    return notes;
+  }
+
+  readNote(
+    user: string, 
+    title: string): void {
+
+    if (fs.existsSync(`notes/${user}/${title}.json`)) {
+
+      let data = fs.readFileSync(`notes/${user}/${title}.json`),
+      noteJsonData = JSON.parse(data.toString()),
+      note = new Note(noteJsonData.title, noteJsonData.content, noteJsonData.color);
+
+      console.log(chalk.keyword(note.getColor())(note.getTitle()));
+      console.log(chalk.keyword(note.getColor())(note.getContent()));
+    }
+    else
+      console.log(chalk.red('ERROR: La nota no existe❌'));
+  }
+}
+```
+
+Posteriormente, en un fichero aparte, he creado los argumentos en línea de comandos necesarios usando `yargs`. Una vez están correctamente definidos, simplemente llamo a las funciones de `commandFunctions` adecuadas:
+
+```typescript
+import * as chalk from 'chalk';
+import * as yargs from 'yargs';
+import { commandFunctions } from './commandFunctions';
+import { Note } from './note';
+
+const noteFunctions = new commandFunctions();
+
+let errorMessage = () => {
+  console.log(chalk.red('ERROR: Invalid arguments❌'));
+}
+
+yargs.command({
+  command: 'add',
+  describe: 'Añadir una nota',
+  builder: {
+    user: {
+      describe: 'Nombre de usuario',
+      demandOption: true,
+      type: 'string',
+    },
+    title: {
+      describe: 'Título de la nota',
+      demandOption: true,
+      type: 'string',
+    },
+    body: {
+      describe: 'Contenido de la nota',
+      demandOption: true,
+      type: 'string',
+    },
+    color: {
+      describe: 'Color de la nota',
+      demandOption: true,
+      type: 'string',
+    },
+  },
+
+  handler(argv) {
+    if (typeof argv.user === 'string' && 
+        typeof argv.title === 'string' &&
+        typeof argv.body === 'string' && 
+        typeof argv.color === 'string') 
+      noteFunctions.addNote(argv.user, argv.title, argv.body, argv.color);
+    
+    else
+      errorMessage();
+  },
+});
+
+
+yargs.command({
+  command: 'remove',
+  describe: 'Elimina una nota',
+  builder: {
+    user: {
+      describe: 'Nombre de usuario',
+      demandOption: true,
+      type: 'string',
+    },
+    title: {
+      describe: 'Título de la nota',
+      demandOption: true,
+      type: 'string',
+    },
+  },
+  
+  handler(argv) {
+    if (typeof argv.user === 'string' && typeof argv.title === 'string') 
+      noteFunctions.deleteNote(argv.user, argv.title);
+  
+    else
+      errorMessage();
+  },
+});
+
+
+yargs.command({
+  command: 'modify',
+  describe: 'Editar una nota',
+  builder: {
+    user: {
+      describe: 'Nombre de usuario',
+      demandOption: true,
+      type: 'string',
+    },
+    title: {
+      describe: 'Título de la nota',
+      demandOption: true,
+      type: 'string',
+    },
+    body: {
+      describe: 'Contenido de la nota',
+      demandOption: true,
+      type: 'string',
+    },
+    color: {
+      describe: 'Color de la nota',
+      demandOption: true,
+      type: 'string',
+    },
+  },
+
+  handler(argv) {
+    if (typeof argv.user === 'string' && 
+        typeof argv.title === 'string' &&
+        typeof argv.body === 'string' && 
+        typeof argv.color === 'string')
+      noteFunctions.editNote(argv.user, argv.title, argv.body, argv.color);
+
+    else
+      errorMessage();
+  },
+});
+
+
+yargs.command({
+  command: 'read',
+  describe: 'Leer una nota',
+  builder: {
+    user: {
+      describe: 'Nombre de usuario',
+      demandOption: true,
+      type: 'string',
+    },
+    title: {
+      describe: 'Título de la nota',
+      demandOption: true,
+      type: 'string',
+    },
+  },
+
+  handler(argv) {
+    if (typeof argv.user === 'string' && typeof argv.title === 'string')
+      noteFunctions.readNote(argv.user, argv.title);
+    else
+      errorMessage();
+  },
+});
+
+
+yargs.command({
+  command: 'list',
+  describe: 'Mostrar todas las notas del usuario',
+  builder: {
+    user: {
+      describe: 'Nombre de usuario',
+      demandOption: true,
+      type: 'string',
+    },
+  },
+
+  handler(argv) {
+    if (typeof argv.user === 'string') {
+      let notes: Note[] = noteFunctions.showNotes(argv.user);
+
+      console.log(chalk.white('\nNotas del usuario: ' + argv.user));
+
+      notes.forEach((n) => {
+        console.log('▫ ', n.title);
+      });
+
+      console.log('\n');
+    } 
+
+    else 
+      errorMessage();
+    
+  },
+});
+
+yargs.parse();
+```
+
+
 ### Ejecución de la aplicación
 
 Aquí muestro un ejemplo de cómo se ejecuta la aplicación:
@@ -126,4 +397,17 @@ Aquí muestro un ejemplo de cómo se ejecuta la aplicación:
 
 ## Conclusión
 
+Ha sido un ejericio muy interesante y entretenido. Siempre es satisfactorio familiarizarse con nuevas dependencias y técnicas que aseguran que nuestro código es seguro y profesional.
+
 ## Bibliografía
+
+- Recursos del aula virtuañ
+- [TypeDoc](https://typedoc.org/)
+- [Mocha](https://mochajs.org/)
+- [Chai](https://www.chaijs.com/)
+- [Guión de la Práctica](https://ull-esit-inf-dsi-2021.github.io/prct08-filesystem-notes-app/)
+- [Repositorio Coveralls y Sonar Cloud](https://campusingenieriaytecnologia.ull.es/mod/url/view.php?id=289851)
+- [Vídeo de configuración de Sonar Cloud](https://drive.google.com/file/d/1FLPargdPBX6JaJ_85jNsRzxe34sMi-Z3/view)
+- [Yargs](https://www.npmjs.com/package/yargs)
+- [Chalk](https://www.npmjs.com/package/chalk)
+- [FileSystem Node](https://nodejs.org/dist/latest-v15.x/docs/api/fs.html#fs_synchronous_api)
